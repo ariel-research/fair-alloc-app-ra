@@ -1,0 +1,23 @@
+.information-card-content {
+    margin-top: 20px;
+}
+.information-card-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+.information-card-citation {
+    font-size: 12px;
+    font-style: italic;
+    color: #777777;
+}
+.information-card-formula {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555555;
+    font-weight: bold;
+}
+.compact-expression {
+    font-size: 0.8em;
+    vertical-align: middle;
+}

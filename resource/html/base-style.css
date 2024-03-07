@@ -1,0 +1,58 @@
+.header {
+    color: #28517f;
+    font-size: 40px;
+    padding: 20px 0 20px 0;
+    text-align: center;
+    font-weight: bold;
+}
+.subheader {
+    color: #28517f;
+    font-size: 20px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-style: italic;
+}
+.sidebar {
+    padding: 20px;
+    background-color: var(--sidebar-background-color);
+}
+.guide {
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: var(--guide-background-color);
+    color: var(--guide-color);
+    padding: 20px;
+    border-radius: 8px;
+}
+.guide-title {
+    color: #28517f;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.guide-step {
+    margin-bottom: 10px;
+}
+.disclaimer {
+    font-size: 12px;
+    color: #777777;
+    margin-top: 20px;
+}
+.information-card-content {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+.information-card-text {
+    color: #28517f;
+    margin-bottom: 10px;
+}
+.information-card-list {
+    list-style-type: decimal;
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+.information-card-disclaimer {
+    font-size: 12px;
+    color: #777777;
+    margin-top: 20px;
+}

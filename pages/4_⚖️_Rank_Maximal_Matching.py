@@ -60,7 +60,6 @@ def load_preferences(m, n, upload_preferences = False, shuffle = False):
                                                                    columns=[
                                                           f"Item {i+1}" for i in range(0, m)],
                                                           index=[f"Agent {i+1}" for i in range(n)])
-            print(st.session_state.preferences)
             return st.session_state.preferences
         
         
@@ -140,10 +139,8 @@ def algorithm(m, n, preferences):
     for i in range(n):
         for j in range(m):
             rank = preferences[i,j]
-            print(rank)
             G.add_edge(f"Agent {i+1}", f"Item {j+1}", rank=rank)
     M = nx.rank_maximal_matching(G=G, top_nodes=ranker_list, rank='rank')
-    print("RMM Matching: ", M)
     half_length = len(M) // 2
     half_M = {k: M[k] for k in list(M)[:half_length]}
     return half_M
@@ -162,71 +159,10 @@ st.set_page_config(
     page_icon="⚖️",
     layout="wide",
 )
-
-st.markdown(
-    """
-    <style>
-    .header {
-        color: #28517f;
-        font-size: 40px;
-        padding: 20px 0 20px 0;
-        text-align: center;
-        font-weight: bold;
-    }
-    .subheader {
-        color: #28517f;
-        font-size: 20px;
-        margin-bottom: 12px;
-        text-align: center;
-        font-style: italic;
-    }
-    .sidebar {
-        padding: 20px;
-        background-color: var(--sidebar-background-color);
-    }
-    .guide {
-        font-size: 16px;
-        line-height: 1.6;
-        background-color: var(--guide-background-color);
-        color: var(--guide-color);
-        padding: 20px;
-        border-radius: 8px;
-    }
-    .guide-title {
-        color: #28517f;
-        font-size: 24px;
-        margin-bottom: 10px;
-    }
-    .guide-step {
-        margin-bottom: 10px;
-    }
-    .disclaimer {
-        font-size: 12px;
-        color: #777777;
-        margin-top: 20px;
-    }
-    .information-card-content {
-        font-family: Arial, sans-serif;
-        font-size: 16px;
-        line-height: 1.6;
-    }
-    .information-card-text {
-        # font-weight: bold;
-        color: #28517f;
-        margin-bottom: 10px;
-    }
-    .information-card-list {
-        list-style-type: decimal;
-        margin-left: 20px;
-        margin-bottom: 10px;
-    }
-    .information-card-disclaimer {
-        font-size: 12px;
-        color: #777777;
-        margin-top: 20px;
-    }
-    </style>
-    """,
+with open('./resource/html/base-style.css', "r") as file:
+    page_style = file.read()
+st.markdown(f'<style>{page_style}</style>'
+    ,
     unsafe_allow_html=True
 )
 
@@ -371,34 +307,11 @@ href = f'<a href="data:file/csv;base64,{b64}" download="preferences.csv">Downloa
 st.markdown(href, unsafe_allow_html=True)
 
 # Add expandable information card
+with open('./resource/html/info-tab-style.css', "r") as file:
+    info_style = file.read()
 with st.expander("ℹ️ Information", expanded=False):
-    st.markdown(
+    st.markdown(f'<style>{info_style}</style>'+
         """
-        <style>
-        .information-card-content {
-            margin-top: 20px;
-        }
-        .information-card-text {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-color);
-        }
-        .information-card-citation {
-            font-size: 12px;
-            font-style: italic;
-            color: #777777;
-        }
-        .information-card-formula {
-            font-size: 14px;
-            line-height: 1.5;
-            color: #555555;
-            font-weight: bold;
-        }
-        .compact-expression {
-            font-size: 0.8em;
-            vertical-align: middle;
-        }
-        </style>
         <div class="information-card-content">
             <h2 class="information-card-header">Rank Maximal Matching</h2>
             <p class="information-card-text">
