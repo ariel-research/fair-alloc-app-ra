@@ -1,12 +1,9 @@
 import logging
 
 # Required Libraries
-from collections import defaultdict
 import base64
 from functools import partial
-import json
 import time
-import random
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -24,7 +21,7 @@ MAX_POINTS = 1000
 
 # Set page configuration
 st.set_page_config(
-    page_title="Course Allocation Problem App",
+    page_title="Efficient and Fair Course Allocation App",
     page_icon="👩‍🎓",
     layout="wide",
 )
@@ -98,7 +95,7 @@ st.markdown(
 )
 
 # Page title
-st.markdown('<h1 class="header">Fast and Efficient Matching</h1>',
+st.markdown('<h1 class="header">Efficient and Fair Course Allocation</h1>',
             unsafe_allow_html=True)
 
 # Page sidebar - User guide
@@ -600,8 +597,6 @@ b64 = base64.b64encode(preferences_csv.encode()).decode()
 href = f'<a href="data:file/csv;base64,{b64}" download="preferences.csv">Download Preferences CSV</a>'
 st.markdown(href, unsafe_allow_html=True)
 
-# compensation button - optional for this algorithm
-compensation = st.checkbox("Use compensation")
 
 # Add expandable information card
 with st.expander("ℹ️ Information", expanded=False):
@@ -633,34 +628,26 @@ with st.expander("ℹ️ Information", expanded=False):
         }
         </style>
         <div class="information-card-content">
-            <h2 class="information-card-header">Iterated Maximum Matching with Compensation</h2>
-            <h3 class="information-card-header">Algorithm Overview</h3>
+            <h2 class="information-card-header">Course Allocation Problem</h2>
+            <h3 class="information-card-header">Problem Overview</h3>
             <p class="information-card-text">
-                <div> The algorithm proceeds in rounds. </div>
-                <div> In each round, the algorithm finds a maximum-weight matching between the agents with remaining items_capacities, and the items with remaining items_capacities, and allocates each matched items to its matched agent. </div>
-                <div> If an agent does not win their maximum match in the present round, the difference between the maximum and the actual match are moved to the next-best option as a compensation, to increase their chances to win it in the next rounds. </div>
+                <div>
+                    In the course allocation problem, a university administrator seeks to
+                    efficiently and fairly <br/>
+                    allocate schedules of over-demanded courses
+                    to students with heterogeneous preferences.
+                </div>
             </p>
-            <!--
-            <h3 class="information-card-header">Notation</h3>
-            <p class="information-card-text">
-                <p>Let A be the set of applicants and P be the set of posts.</p>
-                <p>Each edge (a, p) has a rank i, indicating that post p is the i-th choice for applicant a.</p>
-                <p>A matching is a set of (applicant, post) pairs where each applicant and post appear in at most one pair.</p>
-                <p>A rank-maximal matching aims to maximize the number of applicants matched to their first choice post, followed by their subsequent choices.</p>
-            </p>
-            <h3 class="information-card-header">Algorithm Description</h3>
-            <div class="information-card-text" style="background-color: #F7F7F7; padding: 10px;">
-                <p class="information-card-text">Algorithm 1: Algorithm for Computing a Rank-Maximal Matching</p>
-                <p class="information-card-text">
-                    <p>Given a bipartite graph G = (A, P, E) with preference lists and ranks assigned to each edge.</p>
-                    <p>Initialize an empty matching M.</p>
-                    <p>Repeat the following steps until there are no more augmenting paths in G:</p>
-                    <p>&nbsp;&nbspa. Find an augmenting path in G using a suitable algorithm (e.g., breadth-first search).</p>
-                    <p>&nbsp;&nbspb. Augment the matching M along the augmenting path.</p>
-                    <p>Return the rank-maximal matching M.</p>
-                </p>
-            </div>
-            -->
+            <h3 class="information-card-header">Algorithms</h3>
+            <ul class="information-card-text">
+                <li>Iterated Maximum Matching Adjusted</li>
+                <li>Iterated Maximum Matching Unadjusted</li>
+                <li>Serial Dictatorship</li>
+                <li>Round Robin</li>
+                <li>Bidirectional Round Robin</li>
+                <li>Utilitarian Matching</li>
+                <u
+            </ul>
             <p class="information-card-text">
                 The Iterated Maximum Matching idea (without the compensation) is Algorithm 1 in the following paper:
             </p>
@@ -676,15 +663,24 @@ with st.expander("ℹ️ Information", expanded=False):
 
 
 # Running Algorithm
+    
+algorithms_options = {
+    "iterated maximum matching unadjusted": fairpyx.algorithms.iterated_maximum_matching_unadjusted, 
+    "iterated maximum matching adjusted": fairpyx.algorithms.iterated_maximum_matching_adjusted,
+    "serial dictatorship": fairpyx.algorithms.serial_dictatorship,
+    "round robin": fairpyx.algorithms.round_robin, 
+    "bidirectional round robin": fairpyx.algorithms.bidirectional_round_robin, 
+    "utilitarian matching": fairpyx.algorithms.utilitarian_matching
+}
 
 # Algorithm Implementation
-def algorithm(m, n, items_capacities, agents_capacities, preferences, compensation=False):
+def algorithm(m, n, items_capacities, agents_capacities, preferences, algo_name: str):
     pref_dict = {}
     capa_dict = {}
     req_dict = {}
     agents_conflicts = {}
     items_conflicts = {}
-
+    algorithm = algorithms_options[algo_name]
     for i in range(n):
         pref_dict[f"Agent {i+1}"] = {}
         req_dict[f"Agent {i+1}"] = agents_capacities[i,0]
@@ -702,14 +698,15 @@ def algorithm(m, n, items_capacities, agents_capacities, preferences, compensati
         item_conflicts=items_conflicts,
         agent_conflicts=agents_conflicts,
         )
-
-    algorithm = fairpyx.algorithms.iterated_maximum_matching
+    if algo_name.startswith("iterated maximum matching"):
     # string_explanation_logger = fairpyx.StringsExplanationLogger(instance.agents)
-    string_explanation_logger = fairpyx.StringsExplanationLogger({
-        agent for agent in instance.agents
-    },language='en', mode='w', encoding="utf-8")
-    
-    allocation = fairpyx.divide(algorithm=algorithm, instance=instance, explanation_logger=string_explanation_logger, adjust_utilities=compensation)
+        string_explanation_logger = fairpyx.StringsExplanationLogger({
+            agent for agent in instance.agents
+        },language='en', mode='w', encoding="utf-8")
+        allocation = fairpyx.divide(algorithm=algorithm, instance=instance, explanation_logger=string_explanation_logger)
+    else:
+        allocation = fairpyx.divide(algorithm=algorithm, instance=instance)
+        string_explanation_logger = None
     return allocation,string_explanation_logger, instance
 
 # Checker Function for Algorithm
@@ -723,7 +720,14 @@ def algorithm_checker(instance,allocation):
     return result_vector
 
 
-start_algo = st.button("⏳ Run Iterated Maximum Matching Algorithm")
+algo_name = st.selectbox(
+   "Which algorithm do you want to use?",
+   tuple(algorithms_options.keys()),
+   index=0,
+   placeholder="Select Algorithm...",
+)
+
+start_algo = st.button(f"⏳ Run Algorithm")
 if start_algo:
     with st.spinner('Executing...'):
         if n * m * 0.01 > 3:
@@ -732,15 +736,21 @@ if start_algo:
             time.sleep(n * m * 0.01)
 
     start_time = time.time()
-    outcomes,explanations, instance = algorithm(m, n, items_capacities,agents_capacities,preferences, compensation)
+    outcomes,explanations, instance = algorithm(m, n, items_capacities,agents_capacities,preferences, algo_name)
     end_time = time.time()
     elapsed_time = end_time - start_time
     st.write("🎉 Outcomes:")
     outcomes_list = []
-    for i in range(n):
-        outcomes_items = outcomes[f"Agent {i+1}"]
-        outcomes_str = ", ".join([items for items in outcomes_items])
-        outcomes_list.append([f"Agent {i+1}"]+[outcomes_str]+[explanations.agent_string(f'Agent {i+1}')])
+    if explanations:
+        for i in range(n):
+            outcomes_items = outcomes[f"Agent {i+1}"]
+            outcomes_str = ", ".join([items for items in outcomes_items])
+            outcomes_list.append([f"Agent {i+1}"]+[outcomes_str]+[explanations.agent_string(f'Agent {i+1}')])
+    else:
+        for i in range(n):
+            outcomes_items = outcomes[f"Agent {i+1}"]
+            outcomes_str = ", ".join([items for items in outcomes_items])
+            outcomes_list.append([f"Agent {i+1}"]+[outcomes_str]+["Unavailable"])
     items_head = ['Items', 'Explanation']
     outcomes_df = pd.DataFrame(outcomes_list, columns=['Agent']+items_head)
 
