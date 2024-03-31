@@ -634,28 +634,36 @@ with st.expander("ℹ️ Information", expanded=False):
                 <div>
                     In the course allocation problem, a university administrator seeks to
                     efficiently and fairly <br/>
-                    allocate schedules of over-demanded courses
-                    to students with heterogeneous preferences.
+                    allocate seats (items) in over-demanded courses
+                    among students (agents) with heterogeneous preferences.
                 </div>
             </p>
             <h3 class="information-card-header">Algorithms</h3>
             <ul class="information-card-text">
-                <li>Iterated Maximum Matching Adjusted</li>
-                <li>Iterated Maximum Matching Unadjusted</li>
-                <li>Serial Dictatorship</li>
-                <li>Round Robin</li>
-                <li>Bidirectional Round Robin</li>
-                <li>Utilitarian Matching</li>
-                <u
+                <li>Iterated Maximum Matching Unadjusted: this is Algorithm 1 from the following paper:
+                    <p class="information-card-citation">
+                        - Johannes Brustle, Jack Dippel, Vishnu V. Narayan, Mashbat Suzuki, Adrian Vetta (2020) <br/>
+                        - "One Dollar Each Eliminates Envy" <br/>
+                        - Proceedings of the 21st ACM Conference on Economics and Computation. 2020 <br/>
+                    </p>
+                    It iteratively runs a maximum-weight matching between the set of students with remaining capacity and the set of courses with remaining capacity.
+                </li>
+                <li>Iterated Maximum Matching Adjusted: similar to Iterated Maximum Matching, with an additional 'compensation' mechanism: 
+                   at each round, for every student who did not get the maximum possible utility for that round, we add the difference in utilities to the next-best course,
+                   to increase the chances of getting this course in the next round.
+                </li>
+                <li>Utilitarian Matching: 
+                this algorithm selects the allocation that maximizes the sum of utilities of all students (the "utilitarian welfare"). It is efficient, but may be unfair.
+                </li>
+                <li>Round Robin: the students are arranged in an arbitrary order; each student in turn picks a course; then another round begins, until all students take all the courses they need.
+                </li>
+                <li>Bidirectional Round Robin  (also called Draft):
+                the students are arranged in an arbitrary order; each student in turn picks a course; then the order of the students is reversed, and another round begins; until all students take all the courses they need.
+                </li>
+                <li>Serial Dictatorship: this simulates the current situation in course allocation, in which the agents who come first take their optimal bundle, 
+                whereas the agents who come later can only choose from the remaining courses. The outcome is usually very unfair.
+                </li>
             </ul>
-            <p class="information-card-text">
-                The Iterated Maximum Matching idea (without the compensation) is Algorithm 1 in the following paper:
-            </p>
-            <p class="information-card-citation">
-                - Johannes Brustle, Jack Dippel, Vishnu V. Narayan, Mashbat Suzuki, Adrian Vetta (2020) <br/>
-                - "One Dollar Each Eliminates Envy" <br/>
-                - Proceedings of the 21st ACM Conference on Economics and Computation. 2020 <br/>
-            </p>
         </div>
         """,
         unsafe_allow_html=True
