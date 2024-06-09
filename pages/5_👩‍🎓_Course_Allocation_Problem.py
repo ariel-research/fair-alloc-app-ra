@@ -127,16 +127,18 @@ theme_colors = light_mode if theme_mode == "Light" else dark_mode
 st.sidebar.markdown(
     f"""
     <div class="guide" style="background-color: {theme_colors['guide-background-color']}; color: {theme_colors['guide-color']}">
-    <p>This app calculates outcomes using the Rank Maximal Matching algorithm.</p>
+    <p>This app calculates fair allocation of courses among students using various algorithms.</p>
 
     <h3 style="color: {theme_colors['guide-color']};">Follow these steps to use the app:</h3>
 
     <ol>
         <li>Specify the number of students (n) and courses (m) using the number input boxes.</li>
-        <li>Choose to either upload a courses_capacities / students_capacities / preferences file or edit the courses_capacities / students_capacities / preferences.</li>
-        <li>Specify whether the algorithm uses compensation. </li>
+        <li>Specify the capacity of each course and of each student by either uploading or editing  a courses_capacities / students_capacities table.</li>
+        <li>Choose to either upload a preferences file or edit the preferences.</li>
+        <li>Choose which algorithm to use. You can run several algorithms at once for comparison</li>
         <li>Click the 'Run Algorithm' button to start the algorithm.</li>
         <li>You can download the outcomes as a CSV file using the provided links.</li>
+        <li>Some algorithms provide detailed explanations for the outcomes. Click the text in the "Explanation" column for details.</li>
     </ol>
 
     <p><em><strong>Disclaimer:</strong> The generated outcomes are for demonstration purposes only and may not reflect real-world scenarios.</em></p>
