@@ -735,7 +735,7 @@ def algorithm_checker(instance,allocations):
 algo_names = st.multiselect(
    "Which algorithm do you want to use?",
    tuple(algorithms_options.keys()),
-   ["Iterated maximum matching unadjusted"],
+   ["Iterated maximum matching adjusted"],
    placeholder="Select Algorithm...",
 )
 
